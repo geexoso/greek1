@@ -1,103 +1,179 @@
-import Image from "next/image";
+import Link from "next/link"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <main className="min-h-screen bg-[#FFFBF0]">
+      {/* Header */}
+  
+      <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
+        <div className="flex items-center">
+          <div className="h-12 mr-4">
+            <img
+              src="/logo.png"
+              alt="YO! GREEK Logo"
+              className="h-full object-contain"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        <div className="relative flex-1 max-w-xl mx-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search for products ..."
+              className="w-full py-2 pl-10 pr-4 bg-[#FFFDE0] rounded-full border border-[#FFECB3] focus:outline-none"
+            />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-400"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <Link href="/login" className="text-[#7B3FE4] font-medium underline">
+            Login
+          </Link>
+          <Link href="/cart" className="text-[#D8B0FF]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="8" cy="21" r="1"></circle>
+              <circle cx="19" cy="21" r="1"></circle>
+              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+            </svg>
+          </Link>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <nav className="bg-[#D8D0F0]">
+        <div className="container mx-auto flex">
+          <Link href="/" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">
+            Home
+          </Link>
+          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1">
+            All product
+          </Link>
+          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">
+            With fruits
+          </Link>
+        </div>
+      </nav>
+
+      {/* Hero Image */}
+      <div className="w-full">
+        <img
+          src="https://backend.paleorobbie.com/static/db/plr/files/grass%20fed%20Greek%20yogurt%20Thailand,egE6z7lA6XA=.jpg"
+          alt="Yogurt with berries"
+          className="w-full h-64 object-cover"
+        />
+      </div>
+
+      {/* Best Selling Section */}
+      <section className="container mx-auto py-6">
+        <div className="flex justify-between items-center mb-6">
+          <div className="bg-[#E8E0FF] px-6 py-2 rounded-full">
+            <h2 className="text-xl font-bold">Best Selling</h2>
+          </div>
+          <Link href="/all" className="text-[#9370DB] flex items-center">
+            
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="ml-1"
+            >
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-2">
+            <div className="mb-2">
+              <Link href={`/product/${product.id}`}>
+                <img
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
+                />
+              </Link>
+            </div>
+            <h3 className="font-medium">{product.name}</h3>
+            <div className="text-sm text-gray-600">{product.weight}</div>
+            <div className="font-bold">{product.price} THB</div>
+           <button className="mt-2 w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-1 px-4 rounded-full">
+            Add to cart
+           </button>
+        </div>
+      ))}
+
+        </div>
+      </section>
+    </main>
+  )
 }
+
+const products = [
+  {
+    id: 1,
+    name: "Plain Greek yogurt",
+    weight: "80 g",
+    price: "100.00",
+    image:
+      "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
+  },
+  {
+    id: 2,
+    name: "Peanut butter Greek yogurt",
+    weight: "120 g",
+    price: "120.00",
+    image:
+      "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
+  },
+  {
+    id: 3,
+    name: "Banana Greek yogurt",
+    weight: "160 g",
+    price: "120.00",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
+  },
+  {
+    id: 4,
+    name: "Matcha Blueberry Greek yogurt",
+    weight: "150 g",
+    price: "180.00",
+    image:
+      "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
+  },
+]
