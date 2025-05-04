@@ -1,56 +1,81 @@
 "use client"
-import Link from 'next/link'
-// อันนี้คือหน้าcheck out
 
-import type React from "react"
-import { useRouter } from "next/navigation"
-
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
+import React, { useState } from "react"
+import Link from "next/link"
+import { ChevronDown, ShoppingCart, Search } from "lucide-react"
 
 export default function CheckoutPage() {
-  const [shippingMethod, setShippingMethod] = useState<"delivery" | "pickup">("delivery")
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "banking" | "promptpay">("card")
+  const [shippingMethod, setShippingMethod] = useState("delivery")
+  const [paymentMethod, setPaymentMethod] = useState("card")
 
-  const handleShippingChange = (method: "delivery" | "pickup") => {
+  const handleShippingChange = (method) => {
     setShippingMethod(method)
   }
 
-  const handlePaymentChange = (method: "card" | "banking" | "promptpay") => {
+  const handlePaymentChange = (method) => {
     setPaymentMethod(method)
   }
-  const router = useRouter()
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault()
     // Handle form submission
-    
-    router.push("/order-status")
+    console.log("Order placed")
   }
 
   return (
-    <main className="min-h-screen bg-[#FFFBF0] py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-      <Link
-          href="/"
-          className="absolute top-6 left-6 text-[#7B3FE4] hover:underline flex items-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-1"
-          >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-          Back to home
-        </Link>
+    <main className="min-h-screen bg-[#FFFBF0]">
+      {/* Header */}
+      <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
+        <div className="flex items-center">
+          <div className="h-12 mr-4">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_7817.jpg-VZG4cretlG6LCUFlsdYLthGxid07NG.jpeg"
+              alt="YO! GREEK Logo"
+              className="h-full object-contain"
+            />
+          </div>
+        </div>
 
+        <div className="relative flex-1 max-w-xl mx-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search for products ..."
+              className="w-full py-2 pl-10 pr-4 bg-[#FFFDE0] rounded-full border border-[#FFECB3] focus:outline-none"
+            />
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <Link href="/login" className="text-[#7B3FE4] font-medium underline">
+            Login
+          </Link>
+          <Link href="/cart" className="text-[#D8B0FF]">
+            <ShoppingCart className="w-6 h-6" />
+          </Link>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <nav className="bg-[#D8D0F0]">
+        <div className="container mx-auto flex">
+          <Link href="/" className="py-3 px-6 font-medium text-center flex-1">
+            Home
+          </Link>
+          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1">
+            All product
+          </Link>
+          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
+            With fruits
+          </Link>
+        </div>
+      </nav>
+
+      {/* Checkout Content */}
+      <div className="container mx-auto py-12 px-4">
         <h1 className="text-4xl font-black text-center mb-10">CHECKOUT</h1>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -58,11 +83,11 @@ export default function CheckoutPage() {
           <div className="bg-[#C9D6F0] p-6 rounded-3xl border-4 border-[#FFECB3]">
             <h2 className="text-xl font-bold mb-4">Details</h2>
 
-            <form className="grid gap-4" onSubmit={handleSubmit}>
-              <div className="grid  gap-4">
+            <form className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block mb-1">
-                    Full name
+                    First name
                   </label>
                   <input
                     type="text"
@@ -70,7 +95,16 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
                   />
                 </div>
-               
+                <div>
+                  <label htmlFor="lastName" className="block mb-1">
+                    Last name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -241,8 +275,9 @@ export default function CheckoutPage() {
 
             <div className="flex justify-center">
               <button
-                type="submit"
-                className="bg-[#333333] text-white px-6 py-3 rounded-full font-medium hover:bg-black transition-colors">
+                onClick={handleSubmit}
+                className="bg-[#333333] text-white px-6 py-3 rounded-full font-medium hover:bg-black transition-colors"
+              >
                 Place order
               </button>
             </div>
@@ -252,4 +287,3 @@ export default function CheckoutPage() {
     </main>
   )
 }
-

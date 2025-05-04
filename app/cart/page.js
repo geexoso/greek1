@@ -3,20 +3,11 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Minus, Plus, ShoppingCart, Search } from "lucide-react"
-
-interface CartItem {
-  id: string
-  name: string
-  price: string
-  quantity: number
-  image: string
-  weight: string
-}
+import { Minus, Plus, ShoppingCart, Search } from 'lucide-react'
 
 export default function CartPage() {
   const router = useRouter()
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartItems, setCartItems] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   // โหลดข้อมูลตะกร้าจาก localStorage เมื่อหน้าถูกโหลด
@@ -38,7 +29,7 @@ export default function CartPage() {
   }, [])
 
   // อัปเดตจำนวนสินค้า
-  const updateQuantity = (id: string, change: number) => {
+  const updateQuantity = (id, change) => {
     const updatedItems = cartItems.map((item) => {
       if (item.id === id) {
         const newQuantity = Math.max(1, item.quantity + change)
@@ -52,14 +43,14 @@ export default function CartPage() {
   }
 
   // ลบสินค้าออกจากตะกร้า
-  const removeFromCart = (id: string) => {
+  const removeFromCart = (id) => {
     const updatedItems = cartItems.filter((item) => item.id !== id)
     setCartItems(updatedItems)
     localStorage.setItem("cart", JSON.stringify(updatedItems))
   }
 
   // คำนวณราคารวมของสินค้าแต่ละชิ้น
-  const calculateSubtotal = (price: string, quantity: number) => {
+  const calculateSubtotal = (price, quantity) => {
     return (Number.parseFloat(price) * quantity).toFixed(2)
   }
 
@@ -231,4 +222,3 @@ export default function CartPage() {
     </main>
   )
 }
-

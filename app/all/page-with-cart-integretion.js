@@ -1,17 +1,49 @@
 "use client"
-//อันนี้คือหน้า all product
+
+import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ShoppingCart, Search } from "lucide-react"
 
+/**
+ * @typedef {Object} Product
+ * @property {number} id
+ * @property {string} name
+ * @property {string} weight
+ * @property {string} price
+ * @property {string} image
+ */
+
+/**
+ * @typedef {Product & { quantity: number }} CartItem
+ */
+
 export default function AllProductsPage() {
+  const router = useRouter()
+  const [cartItems, setCartItems] = useState([])
+
+  /** @param {Product} product */
+  const addToCart = (product) => {
+    setCartItems((prevItems) => {
+      const existingItemIndex = prevItems.findIndex((item) => item.id === product.id)
+
+      if (existingItemIndex >= 0) {
+        const updatedItems = [...prevItems]
+        updatedItems[existingItemIndex].quantity += 1
+        return updatedItems
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }]
+      }
+    })
+  }
+
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
-      {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <div className="h-12 mr-4">
             <img
-              src="/logo.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_7817.jpg-VZG4cretlG6LCUFlsdYLthGxid07NG.jpeg"
               alt="YO! GREEK Logo"
               className="h-full object-contain"
             />
@@ -35,13 +67,17 @@ export default function AllProductsPage() {
           <Link href="/login" className="text-[#7B3FE4] font-medium underline">
             Login
           </Link>
-          <Link href="/cart" className="text-[#D8B0FF]">
+          <Link href="/cart" className="text-[#D8B0FF] relative">
             <ShoppingCart className="w-6 h-6" />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#7B3FE4] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+              </span>
+            )}
           </Link>
         </div>
       </header>
 
-      {/* Navigation */}
       <nav className="bg-[#D8D0F0]">
         <div className="container mx-auto flex">
           <Link href="/" className="py-3 px-6 font-medium text-center flex-1">
@@ -56,26 +92,24 @@ export default function AllProductsPage() {
         </div>
       </nav>
 
-      {/* Products Grid */}
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-6">All Products</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {allProducts.map((product) => (
             <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-4 bg-white">
-              <Link href={`/product/${product.id}`}>
+              <div className="mb-3">
                 <img
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
+                  className="w-full h-48 object-cover rounded-lg"
                 />
-              </Link>
-
+              </div>
               <h3 className="font-medium text-lg">{product.name}</h3>
               <div className="text-sm text-gray-600 mb-1">{product.weight}</div>
               <div className="font-bold mb-3">{product.price} THB</div>
               <button
-                onClick={() => console.log(`Added ${product.name} to cart`)}
+                onClick={() => addToCart(product)}
                 className="w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-2 px-4 rounded-full transition-colors"
               >
                 Add to cart
@@ -91,16 +125,16 @@ export default function AllProductsPage() {
 const allProducts = [
   {
     id: 1,
-    name: "Plain Greek yogurt",
+    name: "Chocolate Greek yogurt",
     weight: "100 g",
     price: "120.00",
     image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
   },
   {
     id: 2,
-    name: "Peanut butter Greek yogurt",
-    weight: "120 g",
-    price: "120.00",
+    name: "Strawberry Cheesecake Greek yogurt",
+    weight: "130 g",
+    price: "130.00",
     image: "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
   },
   {
@@ -120,30 +154,31 @@ const allProducts = [
   },
   {
     id: 5,
-    name: "Chocolate Greek yogurt",
+    name: "Mango Greek yogurt",
     weight: "130 g",
     price: "130.00",
-    image: "https://thefoodiediaries.co/wp-content/uploads/2023/04/img_7612-e1680534690722.jpg",
+    image: "https://placeholder.svg?height=200&width=200",
   },
   {
     id: 6,
     name: "Blueberry Greek yogurt",
     weight: "120 g",
     price: "150.00",
-    image: "https://www.mjandhungryman.com/wp-content/uploads/2023/04/Blueberry-yogurt.jpg",
+    image: "https://placeholder.svg?height=200&width=200",
   },
   {
     id: 7,
     name: "Apple Cinnamon Greek yogurt",
     weight: "150 g",
     price: "140.00",
-    image: "https://www.sugarsalted.com/wp-content/uploads/2023/10/caramelized-apple-yogurt-parfaits-dessert-jars-25feat.jpg",
+    image: "https://placeholder.svg?height=200&width=200",
   },
   {
     id: 8,
     name: "Biscoff Greek yogurt",
     weight: "130 g",
     price: "130.00",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
+    image: "https://placeholder.svg?height=200&width=200",
   },
 ]
+

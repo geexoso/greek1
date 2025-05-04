@@ -5,18 +5,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ShoppingCart, Search, Check, Minus, Plus } from "lucide-react"
 
-interface ProductPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function ProductPage({ params }: ProductPageProps) {
+export default function ProductPage({ params }) {
   const router = useRouter()
   const productId = params.id
 
-  // In a real app, you would fetch the product data based on the ID
-  // For now, we'll use a hardcoded product that matches the screenshot
   const product = {
     id: productId,
     name: "Matcha Blueberry Greek yogurt",
@@ -42,10 +34,8 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   const addToCart = () => {
-    // In a real app, you would add the product to the cart
     console.log(`Added ${quantity} ${product.name} to cart`)
 
-    // You could also store in localStorage
     const cartItem = {
       id: product.id,
       name: product.name,
@@ -55,27 +45,21 @@ export default function ProductPage({ params }: ProductPageProps) {
       weight: product.weight,
     }
 
-    // Get existing cart or initialize empty array
     const existingCart = JSON.parse(localStorage.getItem("cart") || "[]")
 
-    // Check if product already exists in cart
-    const existingItemIndex = existingCart.findIndex((item: any) => item.id === product.id)
+    const existingItemIndex = existingCart.findIndex(item => item.id === product.id)
 
     if (existingItemIndex >= 0) {
-      // Update quantity if product exists
       existingCart[existingItemIndex].quantity += quantity
     } else {
-      // Add new item if product doesn't exist
       existingCart.push(cartItem)
     }
 
-    // Save updated cart
     localStorage.setItem("cart", JSON.stringify(existingCart))
   }
 
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
-      {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <Link href="/" className="h-12 mr-4">
@@ -110,17 +94,14 @@ export default function ProductPage({ params }: ProductPageProps) {
         </div>
       </header>
 
-      {/* Product Detail */}
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Product Image */}
           <div className="md:w-1/2 max-w-md mx-auto">
             <div className="border-4 border-[#E8D0FF] rounded-3xl p-4 bg-white">
               <img src={product.image || "/placeholder.svg"} alt={product.name} className="w-full h-auto rounded-xl" />
             </div>
           </div>
 
-          {/* Product Info */}
           <div className="md:w-1/2">
             <h1 className="text-3xl font-bold text-[#4A3728] mb-4">{product.name}</h1>
 
@@ -138,7 +119,6 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="mb-2 text-gray-600 text-sm">{product.weight}</div>
-
             <div className="text-xl font-bold mb-6">{product.price} THB</div>
 
             <div className="flex items-center gap-4">
@@ -165,3 +145,4 @@ export default function ProductPage({ params }: ProductPageProps) {
     </main>
   )
 }
+

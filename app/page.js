@@ -1,10 +1,60 @@
-import Link from "next/link"
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    // Client-side JavaScript functionality
+    const addToCartButtons = document.querySelectorAll('button');
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        alert('Product added to cart!');
+        // In a real application, you would implement actual cart functionality
+      });
+    });
+  }, []);
+
+  // Product data
+  const products = [
+    {
+      id: 1,
+      name: "Plain Greek yogurt",
+      weight: "80 g",
+      price: "100.00",
+      image:
+        "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
+    },
+    {
+      id: 2,
+      name: "Peanut butter Greek yogurt",
+      weight: "120 g",
+      price: "120.00",
+      image:
+        "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
+    },
+    {
+      id: 3,
+      name: "Banana Greek yogurt",
+      weight: "160 g",
+      price: "120.00",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
+    },
+    {
+      id: 4,
+      name: "Matcha Blueberry Greek yogurt",
+      weight: "150 g",
+      price: "180.00",
+      image:
+        "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
       {/* Header */}
-  
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <div className="h-12 mr-4">
@@ -98,7 +148,6 @@ export default function Home() {
             <h2 className="text-xl font-bold">Best Selling</h2>
           </div>
           <Link href="/all" className="text-[#9370DB] flex items-center">
-            
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -117,63 +166,27 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-2">
-            <div className="mb-2">
-              <Link href={`/product/${product.id}`}>
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
-                />
-              </Link>
+          {products.map((product) => (
+            <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-2">
+              <div className="mb-2">
+                <Link href={`/product/${product.id}`}>
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
+                    className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
+                  />
+                </Link>
+              </div>
+              <h3 className="font-medium">{product.name}</h3>
+              <div className="text-sm text-gray-600">{product.weight}</div>
+              <div className="font-bold">{product.price} THB</div>
+              <button className="mt-2 w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-1 px-4 rounded-full">
+                Add to cart
+              </button>
             </div>
-            <h3 className="font-medium">{product.name}</h3>
-            <div className="text-sm text-gray-600">{product.weight}</div>
-            <div className="font-bold">{product.price} THB</div>
-           <button className="mt-2 w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-1 px-4 rounded-full">
-            Add to cart
-           </button>
-        </div>
-      ))}
-
+          ))}
         </div>
       </section>
     </main>
-  )
+  );
 }
-
-const products = [
-  {
-    id: 1,
-    name: "Plain Greek yogurt",
-    weight: "80 g",
-    price: "100.00",
-    image:
-      "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
-  },
-  {
-    id: 2,
-    name: "Peanut butter Greek yogurt",
-    weight: "120 g",
-    price: "120.00",
-    image:
-      "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
-  },
-  {
-    id: 3,
-    name: "Banana Greek yogurt",
-    weight: "160 g",
-    price: "120.00",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
-  },
-  {
-    id: 4,
-    name: "Matcha Blueberry Greek yogurt",
-    weight: "150 g",
-    price: "180.00",
-    image:
-      "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
-  },
-]

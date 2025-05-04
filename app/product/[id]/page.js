@@ -1,9 +1,9 @@
 "use client"
 // อันนี้หน้ารายละเอียด product
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ShoppingCart, Search, Check, Minus, Plus } from "lucide-react"
+import { ShoppingCart, Search, Check, Minus, Plus, ShoppingBag } from 'lucide-react'
 
 // ✅ Sample product list
 const products = [
@@ -15,6 +15,7 @@ const products = [
       price: "100.00",
       image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
       features: ["High protein", "No sugar", "Fresh daily"],
+      category: "plain"
     },
     {
       id: "2",
@@ -24,6 +25,7 @@ const products = [
       price: "120.00",
       image: "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
       features: ["Nutty taste", "Energy booster", "Protein packed"],
+      category: "nuts"
     },
     {
       id: "3",
@@ -33,6 +35,7 @@ const products = [
       price: "120.00",
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
       features: ["With real banana", "Low fat", "No additives"],
+      category: "fruit"
     },
     {
       id: "4",
@@ -44,6 +47,7 @@ const products = [
       image:
         "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
       features: ["High protein", "Matcha & blueberry", "Fresh delivery"],
+      category: "fruit"
     },
     {
       id: "5",
@@ -53,6 +57,7 @@ const products = [
       price: "130.00",
       image: "https://thefoodiediaries.co/wp-content/uploads/2023/04/img_7612-e1680534690722.jpg",
       features: ["High protein", "No sugar", "Fresh daily"],
+      category: "sweet"
     },
     {
       id: "6",
@@ -62,15 +67,17 @@ const products = [
       price: "150.00",
       image: "https://www.mjandhungryman.com/wp-content/uploads/2023/04/Blueberry-yogurt.jpg",
       features: ["High protein", "No sugar", "Fresh daily"],
+      category: "fruit"
     },
     {
       id: "7",
       name: "Apple Cinnamon Greek yogurt",
-      description: "กรีกโยเกิร์ตรสบลูเบอร์รี่  โปรตีนสูง",
+      description: "กรีกโยเกิร์ตรสแอปเปิ้ลซินนามอน  โปรตีนสูง",
       weight: "150 g",
       price: "140.00",
       image: "https://www.sugarsalted.com/wp-content/uploads/2023/10/caramelized-apple-yogurt-parfaits-dessert-jars-25feat.jpg",
       features: ["High protein", "No sugar", "Fresh daily"],
+      category: "fruit"
     },
     {
       id: "8",
@@ -80,58 +87,103 @@ const products = [
       price: "130.00",
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
       features: ["High protein", "No sugar", "Fresh daily"],
+      category: "sweet"
     }
-  ]
+]
   
-  interface ProductPageProps {
-    params: {
-      id: string
+export default function ProductPage({ params }) {
+  const router = useRouter()
+  const product = products.find((p) => p.id === params.id)
+  const [quantity, setQuantity] = useState(1)
+  const [cartCount, setCartCount] = useState(0)
+  const [showCartNotification, setShowCartNotification] = useState(false)
+  
+  // Get related products (same category or random if no category match)
+  const relatedProducts = product 
+    ? products
+        .filter(p => p.id !== product.id && p.category === product.category)
+        .slice(0, 3) || products.filter(p => p.id !== product.id).slice(0, 3)
+    : []
+  
+  // Load cart count on component mount
+  useEffect(() => {
+    try {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+      const count = cart.reduce((total, item) => total + item.quantity, 0)
+      setCartCount(count)
+    } catch (error) {
+      console.error("Failed to load cart:", error)
     }
+  }, [])
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-[#FFFBF0] flex flex-col items-center justify-center p-4">
+        <h1 className="text-2xl font-bold mb-4">Product not found</h1>
+        <p className="mb-6">The product you're looking for doesn't exist or has been removed.</p>
+        <Link 
+          href="/all" 
+          className="bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-2 px-6 rounded-full"
+        >
+          Browse Products
+        </Link>
+      </div>
+    )
   }
-  
-  export default function ProductPage({ params }: ProductPageProps) {
-    const router = useRouter()
-    const product = products.find((p) => p.id === params.id)
-  
-    const [quantity, setQuantity] = useState(1)
-  
-    if (!product) {
-      return <p className="text-center text-red-500 mt-10">Product not found</p>
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) setQuantity(quantity - 1)
+  }
+
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1)
+  }
+
+  const addToCart = () => {
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity,
+      image: product.image,
+      weight: product.weight,
     }
-  
-    const decreaseQuantity = () => {
-      if (quantity > 1) setQuantity(quantity - 1)
-    }
-  
-    const increaseQuantity = () => {
-      setQuantity(quantity + 1)
-    }
-  
-    const addToCart = () => {
-      const cartItem = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        quantity,
-        image: product.image,
-        weight: product.weight,
-      }
-  
+
+    try {
       const existingCart = JSON.parse(localStorage.getItem("cart") || "[]")
-      const existingItemIndex = existingCart.findIndex((item: any) => item.id === product.id)
-  
+      const existingItemIndex = existingCart.findIndex((item) => item.id === product.id)
+
       if (existingItemIndex >= 0) {
         existingCart[existingItemIndex].quantity += quantity
       } else {
         existingCart.push(cartItem)
       }
-  
+
       localStorage.setItem("cart", JSON.stringify(existingCart))
-      alert("Product added to cart!")
+      
+      // Update cart count
+      const newCount = existingCart.reduce((total, item) => total + item.quantity, 0)
+      setCartCount(newCount)
+      
+      // Show notification
+      setShowCartNotification(true)
+      setTimeout(() => setShowCartNotification(false), 3000)
+    } catch (error) {
+      console.error("Failed to add to cart:", error)
+      alert("There was an error adding to cart. Please try again.")
     }
+  }
 
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
+      {/* Cart notification */}
+      {showCartNotification && (
+        <div className="fixed top-4 right-4 bg-green-100 text-green-800 p-4 rounded-lg shadow-lg z-50 flex items-center">
+          <Check className="w-5 h-5 mr-2" />
+          Product added to cart!
+        </div>
+      )}
+      
       {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
       <div className="flex items-center">
@@ -155,7 +207,7 @@ const products = [
             </svg>
             Back to home
          </Link>
-    </div>
+      </div>
 
 
         <div className="relative flex-1 max-w-xl mx-4">
@@ -175,8 +227,13 @@ const products = [
           <Link href="/login" className="text-[#7B3FE4] font-medium underline">
             Login
           </Link>
-          <Link href="/cart" className="text-[#D8B0FF]">
+          <Link href="/cart" className="text-[#D8B0FF] relative">
             <ShoppingCart className="w-6 h-6" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
         </div>
       </header>
@@ -225,13 +282,53 @@ const products = [
 
               <button
                 onClick={addToCart}
-                className="px-6 py-2 bg-[#A0C0FF] hover:bg-[#80A0FF] text-white rounded-full transition-colors"
+                className="px-6 py-2 bg-[#A0C0FF] hover:bg-[#80A0FF] text-white rounded-full transition-colors flex items-center"
               >
+                <ShoppingBag className="w-4 h-4 mr-2" />
                 Add to cart
               </button>
             </div>
+            
+            <div className="mt-8">
+              <Link 
+                href="/cart" 
+                className="text-[#7B3FE4] hover:underline flex items-center"
+              >
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                View cart
+              </Link>
+            </div>
           </div>
         </div>
+        
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold mb-6">You might also like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {relatedProducts.map((relatedProduct) => (
+                <div key={relatedProduct.id} className="border-2 border-[#E8E0FF] rounded-lg p-4 bg-white">
+                  <Link href={`/product/${relatedProduct.id}`}>
+                    <img
+                      src={relatedProduct.image || "/placeholder.svg"}
+                      alt={relatedProduct.name}
+                      className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
+                    />
+                  </Link>
+                  <h3 className="font-medium text-lg mt-2">{relatedProduct.name}</h3>
+                  <div className="text-sm text-gray-600 mb-1">{relatedProduct.weight}</div>
+                  <div className="font-bold mb-3">{relatedProduct.price} THB</div>
+                  <Link 
+                    href={`/product/${relatedProduct.id}`}
+                    className="block w-full text-center bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-2 px-4 rounded-full transition-colors"
+                  >
+                    View product
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )

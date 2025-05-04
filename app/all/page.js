@@ -1,47 +1,45 @@
 "use client"
-
-import { useState } from "react"
+//อันนี้คือหน้า all product
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { ShoppingCart, Search } from "lucide-react"
-
-interface Product {
-  id: number
-  name: string
-  weight: string
-  price: string
-  image: string
-}
-
-interface CartItem extends Product {
-  quantity: number
-}
+import { ShoppingCart, Search } from 'lucide-react'
 
 export default function AllProductsPage() {
-  const router = useRouter()
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cart, setCart] = useState([])
 
-  const addToCart = (product: Product) => {
-    setCartItems((prevItems) => {
-      // Check if item already exists in cart
-      const existingItemIndex = prevItems.findIndex((item) => item.id === product.id)
-
-      if (existingItemIndex >= 0) {
-        // Item exists, increase quantity
-        const updatedItems = [...prevItems]
-        updatedItems[existingItemIndex].quantity += 1
-        return updatedItems
-      } else {
-        // Item doesn't exist, add new item
-        return [...prevItems, { ...product, quantity: 1 }]
+  // Load cart from localStorage when component mounts
+  useEffect(() => {
+    try {
+      const savedCart = localStorage.getItem("cart")
+      if (savedCart) {
+        setCart(JSON.parse(savedCart))
       }
-    })
+    } catch (error) {
+      console.error("Failed to load cart:", error)
+    }
+  }, [])
 
-    // You could also store cart in localStorage here
-    // localStorage.setItem('cart', JSON.stringify([...cartItems, { ...product, quantity: 1 }]))
+  // Add product to cart
+  const addToCart = (product) => {
+    const updatedCart = [...cart]
+    const existingItemIndex = updatedCart.findIndex(item => item.id === product.id)
 
-    // Optional: Show confirmation or navigate to cart
-    // router.push('/cart')
+    if (existingItemIndex >= 0) {
+      // Product already in cart, increase quantity
+      updatedCart[existingItemIndex].quantity += 1
+    } else {
+      // Add new product to cart
+      updatedCart.push({
+        ...product,
+        quantity: 1
+      })
+    }
+
+    setCart(updatedCart)
+    localStorage.setItem("cart", JSON.stringify(updatedCart))
+    
+    // Show feedback to user
+    alert(`${product.name} added to cart!`)
   }
 
   return (
@@ -49,13 +47,13 @@ export default function AllProductsPage() {
       {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
-          <div className="h-12 mr-4">
+          <Link href="/" className="h-12 mr-4">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_7817.jpg-VZG4cretlG6LCUFlsdYLthGxid07NG.jpeg"
+              src="/logo.png"
               alt="YO! GREEK Logo"
               className="h-full object-contain"
             />
-          </div>
+          </Link>
         </div>
 
         <div className="relative flex-1 max-w-xl mx-4">
@@ -77,9 +75,9 @@ export default function AllProductsPage() {
           </Link>
           <Link href="/cart" className="text-[#D8B0FF] relative">
             <ShoppingCart className="w-6 h-6" />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#7B3FE4] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cart.reduce((total, item) => total + item.quantity, 0)}
               </span>
             )}
           </Link>
@@ -108,13 +106,14 @@ export default function AllProductsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {allProducts.map((product) => (
             <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-4 bg-white">
-              <div className="mb-3">
+              <Link href={`/product/${product.id}`}>
                 <img
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
-                  className="w-full h-48 object-cover rounded-lg"
+                  className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
                 />
-              </div>
+              </Link>
+
               <h3 className="font-medium text-lg">{product.name}</h3>
               <div className="text-sm text-gray-600 mb-1">{product.weight}</div>
               <div className="font-bold mb-3">{product.price} THB</div>
@@ -134,28 +133,28 @@ export default function AllProductsPage() {
 
 const allProducts = [
   {
-    id: 1,
-    name: "Chocolate Greek yogurt",
+    id: "1",
+    name: "Plain Greek yogurt",
     weight: "100 g",
     price: "120.00",
     image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
   },
   {
-    id: 2,
-    name: "Strawberry Cheesecake Greek yogurt",
-    weight: "130 g",
-    price: "130.00",
+    id: "2",
+    name: "Peanut butter Greek yogurt",
+    weight: "120 g",
+    price: "120.00",
     image: "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
   },
   {
-    id: 3,
+    id: "3",
     name: "Banana Greek yogurt",
     weight: "160 g",
     price: "120.00",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
   },
   {
-    id: 4,
+    id: "4",
     name: "Matcha Blueberry Greek yogurt",
     weight: "150 g",
     price: "180.00",
@@ -163,31 +162,31 @@ const allProducts = [
       "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
   },
   {
-    id: 5,
-    name: "Mango Greek yogurt",
+    id: "5",
+    name: "Chocolate Greek yogurt",
     weight: "130 g",
     price: "130.00",
-    image: "https://placeholder.svg?height=200&width=200",
+    image: "https://thefoodiediaries.co/wp-content/uploads/2023/04/img_7612-e1680534690722.jpg",
   },
   {
-    id: 6,
+    id: "6",
     name: "Blueberry Greek yogurt",
     weight: "120 g",
     price: "150.00",
-    image: "https://placeholder.svg?height=200&width=200",
+    image: "https://www.mjandhungryman.com/wp-content/uploads/2023/04/Blueberry-yogurt.jpg",
   },
   {
-    id: 7,
+    id: "7",
     name: "Apple Cinnamon Greek yogurt",
     weight: "150 g",
     price: "140.00",
-    image: "https://placeholder.svg?height=200&width=200",
+    image: "https://www.sugarsalted.com/wp-content/uploads/2023/10/caramelized-apple-yogurt-parfaits-dessert-jars-25feat.jpg",
   },
   {
-    id: 8,
+    id: "8",
     name: "Biscoff Greek yogurt",
     weight: "130 g",
     price: "130.00",
-    image: "https://placeholder.svg?height=200&width=200",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
   },
 ]

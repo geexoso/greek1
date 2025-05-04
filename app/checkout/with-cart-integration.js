@@ -1,28 +1,16 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ChevronDown, ShoppingCart, Search } from "lucide-react"
 
-interface CartItem {
-  id: number
-  name: string
-  price: string
-  quantity: number
-  image: string
-  weight: string
-}
-
 export default function CheckoutPage() {
   const router = useRouter()
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [shippingMethod, setShippingMethod] = useState<"delivery" | "pickup">("delivery")
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "banking" | "promptpay">("card")
+  const [cartItems, setCartItems] = useState([])
+  const [shippingMethod, setShippingMethod] = useState("delivery")
+  const [paymentMethod, setPaymentMethod] = useState("card")
 
-  // Load cart items from localStorage on component mount
   useEffect(() => {
     const savedCart = localStorage.getItem("cart")
     if (savedCart) {
@@ -34,17 +22,17 @@ export default function CheckoutPage() {
     }
   }, [])
 
-  const handleShippingChange = (method: "delivery" | "pickup") => {
+  const handleShippingChange = (method) => {
     setShippingMethod(method)
   }
 
-  const handlePaymentChange = (method: "card" | "banking" | "promptpay") => {
+  const handlePaymentChange = (method) => {
     setPaymentMethod(method)
   }
 
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
-      return total + Number.parseFloat(item.price) * item.quantity
+      return total + parseFloat(item.price) * item.quantity
     }, 0)
   }
 
@@ -54,15 +42,8 @@ export default function CheckoutPage() {
     return subtotal + shippingCost
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    // Handle form submission - in a real app, you would:
-    // 1. Validate the form
-    // 2. Process the payment
-    // 3. Create the order in your database
-    // 4. Clear the cart
-    // 5. Redirect to a success page
-
     alert("Order placed successfully!")
     localStorage.removeItem("cart")
     router.push("/order-success")
@@ -132,77 +113,36 @@ export default function CheckoutPage() {
             <form className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="firstName" className="block mb-1">
-                    First name
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                    required
-                  />
+                  <label htmlFor="firstName" className="block mb-1">First name</label>
+                  <input type="text" id="firstName" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block mb-1">
-                    Last name
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                    required
-                  />
+                  <label htmlFor="lastName" className="block mb-1">Last name</label>
+                  <input type="text" id="lastName" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="phone" className="block mb-1">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                    required
-                  />
+                  <label htmlFor="phone" className="block mb-1">Phone</label>
+                  <input type="tel" id="phone" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block mb-1">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                    required
-                  />
+                  <label htmlFor="email" className="block mb-1">Email Address</label>
+                  <input type="email" id="email" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="address" className="block mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                  required
-                />
+                <label htmlFor="address" className="block mb-1">Address</label>
+                <input type="text" id="address" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
-                  <label htmlFor="city" className="block mb-1">
-                    City
-                  </label>
+                  <label htmlFor="city" className="block mb-1">City</label>
                   <div className="relative">
-                    <select
-                      id="city"
-                      className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3] appearance-none"
-                      required
-                    >
+                    <select id="city" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3] appearance-none" required>
                       <option value="bangkok">Bangkok</option>
                       <option value="chiangmai">Chiang Mai</option>
                       <option value="phuket">Phuket</option>
@@ -214,15 +154,8 @@ export default function CheckoutPage() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="postcode" className="block mb-1">
-                    Post Code
-                  </label>
-                  <input
-                    type="text"
-                    id="postcode"
-                    className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]"
-                    required
-                  />
+                  <label htmlFor="postcode" className="block mb-1">Post Code</label>
+                  <input type="text" id="postcode" className="w-full px-4 py-3 rounded-full bg-[#FFFDE0] border border-[#FFECB3]" required />
                 </div>
               </div>
             </form>
@@ -242,17 +175,11 @@ export default function CheckoutPage() {
                 <div key={item.id} className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
                     <div className="w-16 h-16 rounded-lg overflow-hidden mr-3">
-                      <img
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-full object-cover" />
                     </div>
-                    <div>
-                      {item.price} × {item.quantity}
-                    </div>
+                    <div>{item.price} × {item.quantity}</div>
                   </div>
-                  <div className="font-medium">฿ {(Number.parseFloat(item.price) * item.quantity).toFixed(2)}</div>
+                  <div className="font-medium">฿ {(parseFloat(item.price) * item.quantity).toFixed(2)}</div>
                 </div>
               ))
             ) : (
@@ -279,28 +206,11 @@ export default function CheckoutPage() {
             <div className="mb-6">
               <div className="font-medium mb-2">Shipping</div>
               <div className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  id="delivery"
-                  name="shipping"
-                  checked={shippingMethod === "delivery"}
-                  onChange={() => handleShippingChange("delivery")}
-                  className="mr-2"
-                />
-                <label htmlFor="delivery" className="flex justify-between w-full">
-                  <span>Delivery</span>
-                  <span>฿ 80.00</span>
-                </label>
+                <input type="radio" id="delivery" name="shipping" checked={shippingMethod === "delivery"} onChange={() => handleShippingChange("delivery")} className="mr-2" />
+                <label htmlFor="delivery" className="flex justify-between w-full"><span>Delivery</span><span>฿ 80.00</span></label>
               </div>
               <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="pickup"
-                  name="shipping"
-                  checked={shippingMethod === "pickup"}
-                  onChange={() => handleShippingChange("pickup")}
-                  className="mr-2"
-                />
+                <input type="radio" id="pickup" name="shipping" checked={shippingMethod === "pickup"} onChange={() => handleShippingChange("pickup")} className="mr-2" />
                 <label htmlFor="pickup">Pick up at the store</label>
               </div>
             </div>
@@ -308,56 +218,27 @@ export default function CheckoutPage() {
             <div className="flex justify-between border-b border-gray-300 pb-2 mb-6">
               <div className="font-bold">Total</div>
               <div className="font-bold">
-                ฿{" "}
-                {cartItems.length > 0
-                  ? calculateTotal().toFixed(2)
-                  : shippingMethod === "delivery"
-                    ? "380.00"
-                    : "300.00"}
+                ฿ {cartItems.length > 0 ? calculateTotal().toFixed(2) : shippingMethod === "delivery" ? "380.00" : "300.00"}
               </div>
             </div>
 
             <div className="mb-8">
               <div className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  id="card"
-                  name="payment"
-                  checked={paymentMethod === "card"}
-                  onChange={() => handlePaymentChange("card")}
-                  className="mr-2"
-                />
+                <input type="radio" id="card" name="payment" checked={paymentMethod === "card"} onChange={() => handlePaymentChange("card")} className="mr-2" />
                 <label htmlFor="card">Credit/Debit card</label>
               </div>
               <div className="flex items-center mb-2">
-                <input
-                  type="radio"
-                  id="banking"
-                  name="payment"
-                  checked={paymentMethod === "banking"}
-                  onChange={() => handlePaymentChange("banking")}
-                  className="mr-2"
-                />
+                <input type="radio" id="banking" name="payment" checked={paymentMethod === "banking"} onChange={() => handlePaymentChange("banking")} className="mr-2" />
                 <label htmlFor="banking">Mobile Banking</label>
               </div>
               <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="promptpay"
-                  name="payment"
-                  checked={paymentMethod === "promptpay"}
-                  onChange={() => handlePaymentChange("promptpay")}
-                  className="mr-2"
-                />
+                <input type="radio" id="promptpay" name="payment" checked={paymentMethod === "promptpay"} onChange={() => handlePaymentChange("promptpay")} className="mr-2" />
                 <label htmlFor="promptpay">Promptpay</label>
               </div>
             </div>
 
             <div className="flex justify-center">
-              <button
-                onClick={handleSubmit}
-                className="bg-[#333333] text-white px-6 py-3 rounded-full font-medium hover:bg-black transition-colors"
-              >
+              <button onClick={handleSubmit} className="bg-[#333333] text-white px-6 py-3 rounded-full font-medium hover:bg-black transition-colors">
                 Place order
               </button>
             </div>

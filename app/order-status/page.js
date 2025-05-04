@@ -2,53 +2,85 @@
 //อันนี้คือหน้า your order หีรือ dash board ของ user
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ShoppingCart, Search, Home } from "lucide-react"
-
-interface OrderItem {
-  id: string
-  name: string
-  price: string
-  quantity: number
-  image: string
-  status: "order ready" | "in transition" | "delivered"
-}
+import { ShoppingCart, Search, Home } from 'lucide-react'
+import { useRouter } from "next/navigation"
 
 export default function OrderStatusPage() {
-  const [orderItems, setOrderItems] = useState<OrderItem[]>([])
-  const [orderNumber, setOrderNumber] = useState<string>("")
+  const [orderItems, setOrderItems] = useState([])
+  const [orderNumber, setOrderNumber] = useState("")
   const [isLoading, setIsLoading] = useState(true)
+  const [subtotal, setSubtotal] = useState("0.00")
+  const [shipping, setShipping] = useState("0.00")
+  const [total, setTotal] = useState("0.00")
+  const router = useRouter()
 
   useEffect(() => {
     // In a real app, you would fetch the order details from an API
-    // For now, we'll simulate it with a timeout
+    // For now, we'll simulate it with a timeout and localStorage
     const timer = setTimeout(() => {
       try {
-        // Generate a random order number
-        setOrderNumber(
-          `YG${Math.floor(Math.random() * 10000)
+        // Generate a random order number if not already in sessionStorage
+        const storedOrderNumber = sessionStorage.getItem("orderNumber")
+        if (storedOrderNumber) {
+          setOrderNumber(storedOrderNumber)
+        } else {
+          const newOrderNumber = `YG${Math.floor(Math.random() * 10000)
             .toString()
-            .padStart(4, "0")}`,
-        )
+            .padStart(4, "0")}`
+          setOrderNumber(newOrderNumber)
+          sessionStorage.setItem("orderNumber", newOrderNumber)
+        }
 
-        // Sample order items
-        setOrderItems([
-          {
-            id: "1",
-            name: "plain yogurt",
-            price: "100.00",
-            quantity: 1,
-            image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
-            status: "order ready",
-          },
-          {
-            id: "2",
-            name: "banana yogurt",
-            price: "400.00",
-            quantity: 1,
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
-            status: "in transition",
-          },
-        ])
+        // Try to get cart items from localStorage
+        const savedCart = localStorage.getItem("cart")
+        if (savedCart) {
+          const cartItems = JSON.parse(savedCart)
+          
+          // Convert cart items to order items
+          const items = cartItems.map(item => ({
+            ...item,
+            status: Math.random() > 0.5 ? "order ready" : "in transition"
+          }))
+          
+          setOrderItems(items)
+          
+          // Calculate totals
+          const calculatedSubtotal = cartItems.reduce(
+            (sum, item) => sum + Number.parseFloat(item.price) * item.quantity, 
+            0
+          ).toFixed(2)
+          
+          setSubtotal(calculatedSubtotal)
+          setShipping("80.00")
+          setTotal((Number.parseFloat(calculatedSubtotal) + 80).toFixed(2))
+          
+          // Clear cart since order is placed
+          localStorage.removeItem("cart")
+        } else {
+          // If no cart items, use sample data
+          setOrderItems([
+            {
+              id: "1",
+              name: "Plain Greek yogurt",
+              price: "100.00",
+              quantity: 1,
+              image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
+              status: "order ready",
+            },
+            {
+              id: "2",
+              name: "Banana Greek yogurt",
+              price: "400.00",
+              quantity: 1,
+              image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
+              status: "in transition",
+            },
+          ])
+          
+          setSubtotal("500.00")
+          setShipping("80.00")
+          setTotal("580.00")
+        }
       } catch (error) {
         console.error("Failed to process order:", error)
       }
@@ -65,7 +97,7 @@ export default function OrderStatusPage() {
         <div className="flex items-center">
           <Link href="/" className="h-12 mr-4">
             <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/IMG_7817.jpg-VZG4cretlG6LCUFlsdYLthGxid07NG.jpeg"
+              src="/logo.png"
               alt="YO! GREEK Logo"
               className="h-full object-contain"
             />
@@ -98,7 +130,7 @@ export default function OrderStatusPage() {
       {/* Navigation */}
       <nav className="bg-[#D8D0F0]">
         <div className="container mx-auto flex">
-          <Link href="/" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">
+          <Link href="/" className="py-3 px-6 font-medium text-center flex-1">
             <div className="flex justify-center items-center">
               <Home className="w-5 h-5 mr-2" />
               Home
@@ -124,19 +156,24 @@ export default function OrderStatusPage() {
           </div>
         ) : (
           <>
-            <h1 className="text-5xl font-black mb-6">Your order</h1>
+            <div className="bg-green-100 text-green-800 p-4 rounded-lg mb-8 text-center">
+              <h2 className="text-xl font-bold">Thank you for your order!</h2>
+              <p>We've received your order and are processing it now.</p>
+            </div>
+            
+            <h1 className="text-4xl font-black mb-6">Your order</h1>
             {orderNumber && <p className="text-gray-600 mb-6">Order #{orderNumber}</p>}
 
             <div className="bg-[#FFFDE0] rounded-lg overflow-hidden mb-8">
-              <div className="grid grid-cols-3 p-4 font-bold border-b border-gray-200">
-                <div className="text-lg">product</div>
-                <div className="text-center text-lg">status</div>
-                <div className="text-right text-lg">price</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 p-4 font-bold border-b border-gray-200">
+                <div className="text-lg">Product</div>
+                <div className="text-center text-lg">Status</div>
+                <div className="text-right text-lg">Price</div>
               </div>
 
               {orderItems.map((item, index) => (
-                <div key={index} className="grid grid-cols-3 p-6 items-center border-b border-gray-100 last:border-0">
-                  <div className="flex items-center">
+                <div key={index} className="grid grid-cols-1 md:grid-cols-3 p-6 items-center border-b border-gray-100 last:border-0">
+                  <div className="flex items-center mb-4 md:mb-0">
                     <div className="w-24 h-24 mr-6 overflow-hidden rounded-lg">
                       <img
                         src={item.image || "/placeholder.svg?height=96&width=96"}
@@ -144,9 +181,12 @@ export default function OrderStatusPage() {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="text-xl">{item.name}</div>
+                    <div>
+                      <div className="text-xl">{item.name}</div>
+                      <div className="text-gray-500">Quantity: {item.quantity}</div>
+                    </div>
                   </div>
-                  <div className="text-center">
+                  <div className="text-center mb-4 md:mb-0">
                     <span
                       className={`px-4 py-2 rounded-full text-base ${
                         item.status === "order ready"
@@ -159,7 +199,9 @@ export default function OrderStatusPage() {
                       {item.status}
                     </span>
                   </div>
-                  <div className="text-right font-medium text-xl">฿ {item.price}</div>
+                  <div className="text-right font-medium text-xl">
+                    ฿ {(Number.parseFloat(item.price) * item.quantity).toFixed(2)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -168,30 +210,33 @@ export default function OrderStatusPage() {
               <div className="w-full max-w-md">
                 <div className="flex justify-between py-2 border-b border-gray-200">
                   <span>Subtotal</span>
-                  <span className="font-medium">฿ 500.00</span>
+                  <span className="font-medium">฿ {subtotal}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-200">
                   <span>Shipping</span>
-                  <span className="font-medium">฿ 80.00</span>
+                  <span className="font-medium">฿ {shipping}</span>
                 </div>
                 <div className="flex justify-between py-4 font-bold text-lg">
                   <span>Total</span>
-                  <span>฿ 580.00</span>
+                  <span>฿ {total}</span>
                 </div>
 
-                <div className="flex gap-4 mt-8">
+                <div className="flex flex-col sm:flex-row gap-4 mt-8">
                   <Link
                     href="/"
                     className="flex-1 bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-3 px-6 rounded-full text-center"
                   >
                     Continue Shopping
                   </Link>
-                  <Link
-                    href="/order-tracking"
+                  <button
+                    onClick={() => {
+                      // In a real app, this would open a tracking page or modal
+                      alert("Order tracking will be available soon!")
+                    }}
                     className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 py-3 px-6 rounded-full text-center"
                   >
                     Track Order
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

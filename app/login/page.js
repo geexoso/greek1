@@ -1,6 +1,51 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setError("")
+    setIsLoading(true)
+
+    // Basic validation
+    if (!email || !password) {
+      setError("Please fill in all fields")
+      setIsLoading(false)
+      return
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address")
+      setIsLoading(false)
+      return
+    }
+
+    // In a real application, you would make an API call to authenticate
+    // For now, we'll simulate a login with a timeout
+    setTimeout(() => {
+      // Demo login - in a real app, you would check credentials with your backend
+      if (email === "demo@example.com" && password === "password") {
+        // Store user info in localStorage or use a proper auth solution
+        localStorage.setItem("user", JSON.stringify({ email }))
+        router.push("/")
+      } else {
+        setError("Invalid email or password")
+        setIsLoading(false)
+      }
+    }, 1000)
+  }
+
   return (
     <div className="min-h-screen bg-[#FFFBF0] flex items-center justify-center">
       <div className="relative w-full max-w-md p-8">
@@ -28,7 +73,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <form className="w-full space-y-6">
+          {error && (
+            <div className="w-full mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded text-center">
+              {error}
+            </div>
+          )}
+
+          <form className="w-full space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-bold uppercase">
                 EMAIL
@@ -36,6 +87,8 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="greekyogurt@gmail.com"
                 className="w-full px-4 py-2 rounded-md bg-[#C8D6FF] text-gray-700 placeholder-gray-500"
               />
@@ -48,6 +101,8 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="123yogurt456"
                 className="w-full px-4 py-2 rounded-md bg-[#C8D6FF] text-gray-700 placeholder-gray-500"
               />
@@ -56,15 +111,27 @@ export default function LoginPage() {
             <div className="pt-4 flex justify-center">
               <button
                 type="submit"
-                className="px-8 py-2 bg-[#C8B6FF] hover:bg-[#B8A6FF] rounded-full font-bold text-[#4A2B13] transition-colors"
+                disabled={isLoading}
+                className={`px-8 py-2 bg-[#C8B6FF] hover:bg-[#B8A6FF] rounded-full font-bold text-[#4A2B13] transition-colors ${
+                  isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
               >
-                LOG IN
+                {isLoading ? "LOGGING IN..." : "LOG IN"}
               </button>
             </div>
           </form>
 
-          
-          
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don&apos;t have an account?{" "}
+              <Link href="/register" className="text-[#7B3FE4] hover:underline">
+                Sign up
+              </Link>
+            </p>
+            <p className="text-xs text-gray-500 mt-2">
+              Demo: demo@example.com / password
+            </p>
+          </div>
         </div>
       </div>
 
