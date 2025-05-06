@@ -82,14 +82,14 @@ export default function LoginPage() {
           <form className="w-full space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-bold uppercase">
-                EMAIL
+                USERNAME
               </label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="greekyogurt@gmail.com"
+                placeholder="your username"
                 className="w-full px-4 py-2 rounded-md bg-[#C8D6FF] text-gray-700 placeholder-gray-500"
               />
             </div>
@@ -121,17 +121,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-[#7B3FE4] hover:underline">
-                Sign up
-              </Link>
-            </p>
-            <p className="text-xs text-gray-500 mt-2">
-              Demo: demo@example.com / password
-            </p>
-          </div>
+          
         </div>
       </div>
 

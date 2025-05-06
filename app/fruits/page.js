@@ -1,13 +1,12 @@
 "use client"
-//อันนี้คือหน้า all product
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ShoppingCart, Search } from 'lucide-react'
+import { ShoppingCart, Search } from "lucide-react"
 
-export default function AllProductsPage() {
+export default function FruitsPage() {
   const [cart, setCart] = useState([])
 
-  // Load cart from localStorage when component mounts
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem("cart")
@@ -19,40 +18,30 @@ export default function AllProductsPage() {
     }
   }, [])
 
-  // Add product to cart
   const addToCart = (product) => {
     const updatedCart = [...cart]
-    const existingItemIndex = updatedCart.findIndex(item => item.id === product.id)
+    const existingItemIndex = updatedCart.findIndex((item) => item.id === product.id)
 
     if (existingItemIndex >= 0) {
-      // Product already in cart, increase quantity
       updatedCart[existingItemIndex].quantity += 1
     } else {
-      // Add new product to cart
       updatedCart.push({
         ...product,
-        quantity: 1
+        quantity: 1,
       })
     }
 
     setCart(updatedCart)
     localStorage.setItem("cart", JSON.stringify(updatedCart))
-    
-    // Show feedback to user
     alert(`${product.name} added to cart!`)
   }
 
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
-      {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <Link href="/" className="h-12 mr-4">
-            <img
-              src="/logo.png"
-              alt="YO! GREEK Logo"
-              className="h-full object-contain"
-            />
+            <img src="/logo.png" alt="YO! GREEK Logo" className="h-full object-contain" />
           </Link>
         </div>
 
@@ -84,16 +73,15 @@ export default function AllProductsPage() {
         </div>
       </header>
 
-      {/* Navigation */}
       <nav className="bg-[#D8D0F0]">
         <div className="container mx-auto flex">
           <Link href="/" className="py-3 px-6 font-medium text-center flex-1">
             Home
           </Link>
-          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">
+          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1">
             All product
           </Link>
-          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">
+          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">
             With fruits
           </Link>
           <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
@@ -102,12 +90,11 @@ export default function AllProductsPage() {
         </div>
       </nav>
 
-      {/* Products Grid */}
       <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold mb-6">All Products</h1>
+        <h1 className="text-2xl font-bold mb-6">Fruit Yogurts</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {allProducts.map((product) => (
+          {fruitProducts.map((product) => (
             <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-4 bg-white">
               <Link href={`/product/${product.id}`}>
                 <img
@@ -134,21 +121,7 @@ export default function AllProductsPage() {
   )
 }
 
-const allProducts = [
-  {
-    id: "1",
-    name: "Plain Greek yogurt",
-    weight: "100 g",
-    price: "120.00",
-    image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
-  },
-  {
-    id: "2",
-    name: "Peanut butter Greek yogurt",
-    weight: "120 g",
-    price: "120.00",
-    image: "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
-  },
+const fruitProducts = [
   {
     id: "3",
     name: "Banana Greek yogurt",
@@ -161,15 +134,7 @@ const allProducts = [
     name: "Matcha Blueberry Greek yogurt",
     weight: "150 g",
     price: "180.00",
-    image:
-      "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
-  },
-  {
-    id: "5",
-    name: "Chocolate Greek yogurt",
-    weight: "130 g",
-    price: "130.00",
-    image: "https://thefoodiediaries.co/wp-content/uploads/2023/04/img_7612-e1680534690722.jpg",
+    image: "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
   },
   {
     id: "6",
@@ -186,10 +151,18 @@ const allProducts = [
     image: "https://www.sugarsalted.com/wp-content/uploads/2023/10/caramelized-apple-yogurt-parfaits-dessert-jars-25feat.jpg",
   },
   {
-    id: "8",
-    name: "Biscoff Greek yogurt",
+    id: "11",
+    name: "Strawberry Greek yogurt",
     weight: "130 g",
-    price: "130.00",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
+    price: "150.00",
+    image: "https://www.savoryonline.com/app/uploads/recipes/232671/whipped-yogurt-with-roasted-strawberries-scaled-640x640-c-center.jpg",
+  },
+  {
+    id: "12",
+    name: "Mixed Berry Greek yogurt",
+    weight: "140 g",
+    price: "160.00",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6d114qumGIED84ji88YSGIFL-Wbq54P-HmQ&s",
   },
 ]
+

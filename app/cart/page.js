@@ -108,8 +108,11 @@ export default function CartPage() {
           <Link href="/all" className="py-3 px-6 font-medium text-center flex-1">
             All product
           </Link>
-          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
+          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">
             With fruits
+          </Link>
+          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
+            Sweets
           </Link>
         </div>
       </nav>

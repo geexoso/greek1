@@ -1,33 +1,34 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect } from "react";
+"use client"
+import Link from "next/link"
+import { useEffect, useState } from "react"
+import { ShoppingCart, Search } from "lucide-react"
 
 export default function Home() {
+  const [cart, setCart] = useState([])
+
   useEffect(() => {
-    // Client-side JavaScript functionality
-    const addToCartButtons = document.querySelectorAll('button');
-    addToCartButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        alert('Product added to cart!');
-        // In a real application, you would implement actual cart functionality
-      });
-    });
-  }, []);
+    // Load cart from localStorage when component mounts
+    try {
+      const savedCart = localStorage.getItem("cart")
+      if (savedCart) {
+        setCart(JSON.parse(savedCart))
+      }
+    } catch (error) {
+      console.error("Failed to load cart:", error)
+    }
+  }, [])
 
   // Product data
   const products = [
     {
-      id: 1,
+      id: "1",
       name: "Plain Greek yogurt",
       weight: "80 g",
       price: "100.00",
-      image:
-        "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
+      image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
     },
     {
-      id: 2,
+      id: "2",
       name: "Peanut butter Greek yogurt",
       weight: "120 g",
       price: "120.00",
@@ -35,22 +36,44 @@ export default function Home() {
         "https://www.walderwellness.com/wp-content/uploads/2022/02/Peanut-Butter-Greek-Yogurt-Walder-Wellness-2.jpg",
     },
     {
-      id: 3,
+      id: "3",
       name: "Banana Greek yogurt",
       weight: "160 g",
       price: "120.00",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
     },
     {
-      id: 4,
+      id: "4",
       name: "Matcha Blueberry Greek yogurt",
       weight: "150 g",
       price: "180.00",
       image:
         "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
     },
-  ];
+  ]
+
+  // Add product to cart
+  const addToCart = (product) => {
+    const updatedCart = [...cart]
+    const existingItemIndex = updatedCart.findIndex((item) => item.id === product.id)
+
+    if (existingItemIndex >= 0) {
+      // Product already in cart, increase quantity
+      updatedCart[existingItemIndex].quantity += 1
+    } else {
+      // Add new product to cart
+      updatedCart.push({
+        ...product,
+        quantity: 1,
+      })
+    }
+
+    setCart(updatedCart)
+    localStorage.setItem("cart", JSON.stringify(updatedCart))
+
+    // Show feedback to user
+    alert(`${product.name} added to cart!`)
+  }
 
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
@@ -58,11 +81,7 @@ export default function Home() {
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <div className="h-12 mr-4">
-            <img
-              src="/logo.png"
-              alt="YO! GREEK Logo"
-              className="h-full object-contain"
-            />
+            <img src="/logo.png" alt="YO! GREEK Logo" className="h-full object-contain" />
           </div>
         </div>
 
@@ -74,21 +93,7 @@ export default function Home() {
               className="w-full py-2 pl-10 pr-4 bg-[#FFFDE0] rounded-full border border-[#FFECB3] focus:outline-none"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-gray-400"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
+              <Search className="w-5 h-5 text-gray-400" />
             </div>
           </div>
         </div>
@@ -97,22 +102,13 @@ export default function Home() {
           <Link href="/login" className="text-[#7B3FE4] font-medium underline">
             Login
           </Link>
-          <Link href="/cart" className="text-[#D8B0FF]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="8" cy="21" r="1"></circle>
-              <circle cx="19" cy="21" r="1"></circle>
-              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-            </svg>
+          <Link href="/cart" className="text-[#D8B0FF] relative">
+            <ShoppingCart className="w-6 h-6" />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cart.reduce((total, item) => total + item.quantity, 0)}
+              </span>
+            )}
           </Link>
         </div>
       </header>
@@ -128,6 +124,9 @@ export default function Home() {
           </Link>
           <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">
             With fruits
+          </Link>
+          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
+            Sweets
           </Link>
         </div>
       </nav>
@@ -180,7 +179,10 @@ export default function Home() {
               <h3 className="font-medium">{product.name}</h3>
               <div className="text-sm text-gray-600">{product.weight}</div>
               <div className="font-bold">{product.price} THB</div>
-              <button className="mt-2 w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-1 px-4 rounded-full">
+              <button
+                onClick={() => addToCart(product)}
+                className="mt-2 w-full bg-[#A0C0FF] hover:bg-[#80A0FF] text-white py-1 px-4 rounded-full"
+              >
                 Add to cart
               </button>
             </div>
@@ -188,5 +190,5 @@ export default function Home() {
         </div>
       </section>
     </main>
-  );
+  )
 }

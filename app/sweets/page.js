@@ -1,13 +1,12 @@
 "use client"
-//อันนี้คือหน้า all product
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ShoppingCart, Search } from 'lucide-react'
+import { ShoppingCart, Search } from "lucide-react"
 
-export default function AllProductsPage() {
+export default function SweetsPage() {
   const [cart, setCart] = useState([])
 
-  // Load cart from localStorage when component mounts
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem("cart")
@@ -19,40 +18,30 @@ export default function AllProductsPage() {
     }
   }, [])
 
-  // Add product to cart
   const addToCart = (product) => {
     const updatedCart = [...cart]
-    const existingItemIndex = updatedCart.findIndex(item => item.id === product.id)
+    const existingItemIndex = updatedCart.findIndex((item) => item.id === product.id)
 
     if (existingItemIndex >= 0) {
-      // Product already in cart, increase quantity
       updatedCart[existingItemIndex].quantity += 1
     } else {
-      // Add new product to cart
       updatedCart.push({
         ...product,
-        quantity: 1
+        quantity: 1,
       })
     }
 
     setCart(updatedCart)
     localStorage.setItem("cart", JSON.stringify(updatedCart))
-    
-    // Show feedback to user
     alert(`${product.name} added to cart!`)
   }
 
   return (
     <main className="min-h-screen bg-[#FFFBF0]">
-      {/* Header */}
       <header className="container mx-auto p-4 flex items-center justify-between border-b border-gray-200">
         <div className="flex items-center">
           <Link href="/" className="h-12 mr-4">
-            <img
-              src="/logo.png"
-              alt="YO! GREEK Logo"
-              className="h-full object-contain"
-            />
+            <img src="/logo.png" alt="YO! GREEK Logo" className="h-full object-contain" />
           </Link>
         </div>
 
@@ -84,30 +73,20 @@ export default function AllProductsPage() {
         </div>
       </header>
 
-      {/* Navigation */}
       <nav className="bg-[#D8D0F0]">
         <div className="container mx-auto flex">
-          <Link href="/" className="py-3 px-6 font-medium text-center flex-1">
-            Home
-          </Link>
-          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">
-            All product
-          </Link>
-          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">
-            With fruits
-          </Link>
-          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1">
-            Sweets
-          </Link>
+          <Link href="/" className="py-3 px-6 font-medium text-center flex-1">Home</Link>
+          <Link href="/all" className="py-3 px-6 font-medium text-center flex-1">All product</Link>
+          <Link href="/fruits" className="py-3 px-6 font-medium text-center flex-1">With fruits</Link>
+          <Link href="/sweets" className="py-3 px-6 font-medium text-center flex-1 border-b-2 border-black">Sweets</Link>
         </div>
       </nav>
 
-      {/* Products Grid */}
       <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold mb-6">All Products</h1>
+        <h1 className="text-2xl font-bold mb-6">Sweet Yogurts</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {allProducts.map((product) => (
+          {sweetProducts.map((product) => (
             <div key={product.id} className="border-2 border-[#E8E0FF] rounded-lg p-4 bg-white">
               <Link href={`/product/${product.id}`}>
                 <img
@@ -116,7 +95,6 @@ export default function AllProductsPage() {
                   className="w-full h-48 object-cover rounded-lg cursor-pointer hover:opacity-90 transition"
                 />
               </Link>
-
               <h3 className="font-medium text-lg">{product.name}</h3>
               <div className="text-sm text-gray-600 mb-1">{product.weight}</div>
               <div className="font-bold mb-3">{product.price} THB</div>
@@ -134,14 +112,7 @@ export default function AllProductsPage() {
   )
 }
 
-const allProducts = [
-  {
-    id: "1",
-    name: "Plain Greek yogurt",
-    weight: "100 g",
-    price: "120.00",
-    image: "https://www.daisybeet.com/wp-content/uploads/2024/01/Homemade-Greek-Yogurt-13.jpg",
-  },
+const sweetProducts = [
   {
     id: "2",
     name: "Peanut butter Greek yogurt",
@@ -157,14 +128,6 @@ const allProducts = [
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8qQ5nykmhb0UVn23P7ScZUT_5Vm3mDxpm1Q&s",
   },
   {
-    id: "4",
-    name: "Matcha Blueberry Greek yogurt",
-    weight: "150 g",
-    price: "180.00",
-    image:
-      "https://ceremonymatcha.com/cdn/shop/articles/Bildschirmfoto_2022-05-18_um_15.05.06.jpg?crop=center&height=600&v=1652879988&width=600",
-  },
-  {
     id: "5",
     name: "Chocolate Greek yogurt",
     weight: "130 g",
@@ -172,24 +135,24 @@ const allProducts = [
     image: "https://thefoodiediaries.co/wp-content/uploads/2023/04/img_7612-e1680534690722.jpg",
   },
   {
-    id: "6",
-    name: "Blueberry Greek yogurt",
-    weight: "120 g",
-    price: "150.00",
-    image: "https://www.mjandhungryman.com/wp-content/uploads/2023/04/Blueberry-yogurt.jpg",
-  },
-  {
-    id: "7",
-    name: "Apple Cinnamon Greek yogurt",
-    weight: "150 g",
-    price: "140.00",
-    image: "https://www.sugarsalted.com/wp-content/uploads/2023/10/caramelized-apple-yogurt-parfaits-dessert-jars-25feat.jpg",
-  },
-  {
     id: "8",
     name: "Biscoff Greek yogurt",
     weight: "130 g",
     price: "130.00",
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
+  },
+  {
+    id: "9",
+    name: "Honey Greek yogurt",
+    weight: "120 g",
+    price: "140.00",
+    image: "https://paleoglutenfree.com/wp-content/uploads/2017/03/granola-parfait-14-678x1024.jpg",
+  },
+  {
+    id: "10",
+    name: "Caramel Greek yogurt",
+    weight: "140 g",
+    price: "150.00",
+    image: "https://au.easiyo.com/cdn/shop/products/GS.SaltedCaramel_2048x.jpg?v=1625018779",
   },
 ]
