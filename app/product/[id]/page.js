@@ -2,6 +2,8 @@
 // อันนี้หน้ารายละเอียด product
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useParams } from "next/navigation"
+
 import { useRouter } from "next/navigation"
 import { ShoppingCart, Search, Check, Minus, Plus, ShoppingBag } from 'lucide-react'
 
@@ -88,11 +90,49 @@ const products = [
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9Kq4AsXIJ1J1_f3ozJpvqxS9T2HJyiFrqvQ&s",
       features: ["High protein", "No sugar", "Fresh daily"],
       category: "sweet"
+    },
+    {
+      id: "11",
+      name: "Strawberry Greek yogurt",
+      weight: "130 g",
+      price: "150.00",
+      image: "https://www.savoryonline.com/app/uploads/recipes/232671/whipped-yogurt-with-roasted-strawberries-scaled-640x640-c-center.jpg",
+      features: ["High protein", "No sugar", "Fresh daily"],
+      category: "fruit"
+    },
+    {
+      id: "12",
+      name: "Mixed Berry Greek yogurt",
+      weight: "140 g",
+      price: "160.00",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6d114qumGIED84ji88YSGIFL-Wbq54P-HmQ&s",
+      features: ["High protein", "No sugar", "Fresh daily"],
+      category: "fruit"
+    },
+    {
+      id: "9",
+      name: "Honey Greek yogurt",
+      weight: "120 g",
+      price: "140.00",
+      image: "https://paleoglutenfree.com/wp-content/uploads/2017/03/granola-parfait-14-678x1024.jpg",
+      features: ["High protein", "No sugar", "Fresh daily"],
+      category: "sweet"
+    },
+    {
+      id: "10",
+      name: "Caramel Greek yogurt",
+      weight: "140 g",
+      price: "150.00",
+      image: "https://au.easiyo.com/cdn/shop/products/GS.SaltedCaramel_2048x.jpg?v=1625018779",
+      features: ["High protein", "No sugar", "Fresh daily"],
+      category: "sweet"
     }
 ]
   
-export default function ProductPage({ params }) {
+export default function ProductPage() {
   const router = useRouter()
+  const params = useParams()
+  const productId = params?.id?.toString()
   const product = products.find((p) => p.id === params.id)
   const [quantity, setQuantity] = useState(1)
   const [cartCount, setCartCount] = useState(0)
